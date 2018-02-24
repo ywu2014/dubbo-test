@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="user-service" logger="slf4j"/>
+
+    <!-- 只订阅模式 -->
+    <!--<dubbo:registry address="zookeeper://localhost:2181" register="false"/>-->
+    <!-- 只注册模式 -->
+    <!--<dubbo:registry address="zookeeper://localhost:2181" subscribe="false"/>-->
+
+    <dubbo:registry address="zookeeper://localhost:2181" dynamic="true"/>
+
+    <!-- 延迟提供dubbo服务,直到spring容器初始化完毕 -->
+    <!-- token表示必须经过注册中心,直连失效 -->
+    <dubbo:provider delay="-1" token="true"/>
+
+    <!--<dubbo:protocol name="dubbo" port="20880" dispatcher="direct"/>-->
+    <dubbo:protocol name="dubbo" port="20880" dispatcher="all" threadpool="fixed" threads="10" accesslog="true"/>
+    <!--<dubbo:protocol name="rmi" port="21880"/>-->
+
+    <bean id="userService" class="com.jiangnan.dubbo.service.impl.UserServiceImpl" init-method="init"/>
+    <bean id="helloService" class="com.jiangnan.dubbo.service.impl.HelloServiceImpl"/>
+    <bean id="helloService2" class="com.jiangnan.dubbo.service.impl.HelloServiceImpl2"/>
+
+    <dubbo:service interface="com.jiangnan.dubbo.service.UserService" ref="userService"/>
+    <dubbo:service interface="com.jiangnan.dubbo.service.HelloService" ref="helloService"/>
+
+    <!-- 多协议 -->
+    <!--<dubbo:service interface="com.jiangnan.dubbo.service.UserService" ref="userService" protocol="dubbo"/>
+    <dubbo:service interface="com.jiangnan.dubbo.service.HelloService" ref="helloService" protocol="rmi"/>-->
+
+    <!-- 服务分组 -->
+    <!--<dubbo:service interface="com.jiangnan.dubbo.service.HelloService" ref="helloService" group="hello1"/>
+    <dubbo:service interface="com.jiangnan.dubbo.service.HelloService" ref="helloService2" group="hello2"/>-->
+
+    <!-- 服务多版本 -->
+    <!--<dubbo:service interface="com.jiangnan.dubbo.service.HelloService" ref="helloService" version="1.0"/>
+    <dubbo:service interface="com.jiangnan.dubbo.service.HelloService" ref="helloService2" version="2.0"/>-->
+
+    <!-- 参数校验 -->
+    <!--<dubbo:service interface="com.jiangnan.dubbo.service.UserService" ref="userService"/>-->
+</beans>

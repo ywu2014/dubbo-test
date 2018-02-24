@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="user-consumer"/>
+    <dubbo:registry address="zookeeper://localhost:2181" check="true"/>
+    <dubbo:consumer check="false"/>
+    <!--<dubbo:protocol name="dubbo" port="20880"/>-->
+
+    <!-- 直连 -->
+    <!--<dubbo:reference id="userService" interface="com.jiangnan.dubbo.service.UserService"
+                     check="true" loadbalance="roundrobin" url="dubbo://localhost:20880">
+        <dubbo:method name="getAll" loadbalance="random"/>
+    </dubbo:reference>-->
+
+    <dubbo:reference id="userService" interface="com.jiangnan.dubbo.service.UserService"
+                     check="false" loadbalance="roundrobin">
+        <dubbo:method name="getAll" loadbalance="random"/>
+    </dubbo:reference>
+
+    <dubbo:reference id="helloService" interface="com.jiangnan.dubbo.service.HelloService"/>
+
+    <!-- 分组 -->
+    <!--<dubbo:reference id="helloService" interface="com.jiangnan.dubbo.service.HelloService" group="hello1"/>
+    <dubbo:reference id="helloService2" interface="com.jiangnan.dubbo.service.HelloService" group="hello2"/>-->
+
+    <!-- 分组合并 -->
+    <!--<dubbo:reference id="helloService" interface="com.jiangnan.dubbo.service.HelloService" group="*" merger="true"/>-->
+
+    <!-- 服务多版本 -->
+    <!--<dubbo:reference id="helloService" interface="com.jiangnan.dubbo.service.HelloService" version="1.0"/>-->
+    <!--<dubbo:reference id="helloService" interface="com.jiangnan.dubbo.service.HelloService" version="2.0"/>-->
+
+    <!-- 消费端参数验证 -->
+    <!--<dubbo:reference id="userService" interface="com.jiangnan.dubbo.service.UserService" validation="true"/>-->
+
+    <!-- 结果缓存 -->
+    <!--<dubbo:reference id="userService" interface="com.jiangnan.dubbo.service.UserService" loadbalance="roundrobin" cache="lru"/>-->
+
+    <!-- 泛化引用 -->
+    <!--<dubbo:reference id="genericUserService" interface="com.jiangnan.dubbo.service.UserService" generic="true"/>-->
+
+    <!-- 异步调用 -->
+    <!--<dubbo:reference id="userService" interface="com.jiangnan.dubbo.service.UserService"
+                     check="false" loadbalance="roundrobin">
+        <dubbo:method name="getById" async="true" return="true"/>
+        <dubbo:method name="deleteById" async="true" return="false"/>
+    </dubbo:reference>-->
+
+    <!-- 事件通知 -->
+    <!--<bean id="myNotify" class="com.jiangnan.dubbo.notify.MyNofity"/>
+    <dubbo:reference id="userService" interface="com.jiangnan.dubbo.service.HelloService">
+        <dubbo:method name="getById" oninvoke="myNotify.onInvoke" onreturn="myNotify.onReturn" onthrow="myNotify.onThrow"/>
+    </dubbo:reference>-->
+</beans>
